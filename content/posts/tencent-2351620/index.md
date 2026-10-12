@@ -21,12 +21,16 @@
   "build": {
     "publishResources": false
   },
-  "description": "N皇后问题--bitset解的思路。旧文归档，原始发表于 2020-08-10。"
+  "description": "N皇后问题--bitset解的思路。旧文归档，原始发表于 2020-08-10。",
+  "original_date_text": "2020-08-10",
+  "original_sort_key": 20200810,
+  "original_year": 2020,
+  "date_precision": "day"
 }
 
 > **旧文迁移 · 补录说明**
 >
-> 原始发表：**2020-08-10**；本站迁移：**2026-10-12**。原始日期依据腾讯云页尾记录，正文与代码按历史版本归档。
+> 原始发表：**2020-08-10**；本站迁移：**2026-10-12**。正文与代码按历史版本归档。
 >
 > [腾讯云原文](https://cloud.tencent.com/developer/article/2351620) · [原个人博客地址](https://blog.linhui.fun/article/48)
 

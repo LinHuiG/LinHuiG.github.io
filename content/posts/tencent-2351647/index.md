@@ -22,12 +22,16 @@
   "build": {
     "publishResources": false
   },
-  "description": "raft集群实战案例：两地四节点。旧文归档，原始发表于 2023-07-31。"
+  "description": "raft集群实战案例：两地四节点。旧文归档，原始发表于 2023-07-31。",
+  "original_date_text": "2023-07-31",
+  "original_sort_key": 20230731,
+  "original_year": 2023,
+  "date_precision": "day"
 }
 
 > **旧文迁移 · 补录说明**
 >
-> 原始发表：**2023-07-31**；本站迁移：**2026-10-12**。原始日期依据腾讯云页尾记录，正文与代码按历史版本归档。
+> 原始发表：**2023-07-31**；本站迁移：**2026-10-12**。正文与代码按历史版本归档。
 >
 > [腾讯云原文](https://cloud.tencent.com/developer/article/2351647) · [原个人博客地址](https://blog.linhui.fun/article/71)
 

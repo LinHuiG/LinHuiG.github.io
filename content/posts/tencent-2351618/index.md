@@ -22,12 +22,16 @@
   "build": {
     "publishResources": false
   },
-  "description": "java web小项目：记录签到系统。旧文归档，原始发表于 2019-07-20。"
+  "description": "java web小项目：记录签到系统。旧文归档，原始发表于 2019-07-20。",
+  "original_date_text": "2019-07-20",
+  "original_sort_key": 20190720,
+  "original_year": 2019,
+  "date_precision": "day"
 }
 
 > **旧文迁移 · 补录说明**
 >
-> 原始发表：**2019-07-20**；本站迁移：**2026-10-12**。原始日期依据腾讯云页尾记录，正文与代码按历史版本归档。
+> 原始发表：**2019-07-20**；本站迁移：**2026-10-12**。正文与代码按历史版本归档。
 >
 > [腾讯云原文](https://cloud.tencent.com/developer/article/2351618) · [原个人博客地址](https://blog.linhui.fun/article/11)
 

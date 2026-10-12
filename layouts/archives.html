@@ -1,0 +1,17 @@
+{{- define "main" }}
+<header class="page-header"><h1>{{ .Title }}</h1><p>按原始写作时间归档。约略日期保留原有精度，迁移与补录时间不参与排序。</p></header>
+{{- $items := slice -}}
+{{- range where site.RegularPages "Section" "posts" -}}
+  {{- $year := .Params.original_year | default .Date.Year -}}
+  {{- $items = $items | append (dict "page" . "year" (printf "%v" $year)) -}}
+{{- end -}}
+{{- $years := slice -}}{{- range $items -}}{{- $years = $years | append .year -}}{{- end -}}
+{{- range sort (uniq $years) "value" "desc" -}}
+  {{- $year := . -}}{{- $group := where $items "year" $year -}}
+  {{- $pages := slice -}}{{- range $group -}}{{- $pages = $pages | append .page -}}{{- end -}}
+  <div class="archive-year"><h2 class="archive-year-header" id="{{ $year }}">{{ $year }}<sup class="archive-count"> {{ len $pages }}</sup></h2>
+  <div class="archive-posts">{{ range partial "sort-posts.html" $pages }}
+    <div class="archive-entry"><h3 class="archive-entry-title">{{ .Title }}</h3><div class="archive-meta">{{ partial "post_meta.html" . }}</div><a class="entry-link" aria-label="{{ .Title }}" href="{{ .Permalink }}"></a></div>
+  {{ end }}</div></div>
+{{- end -}}
+{{- end -}}

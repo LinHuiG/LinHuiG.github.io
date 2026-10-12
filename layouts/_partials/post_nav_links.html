@@ -1,0 +1,8 @@
+{{- $pages := partial "sort-posts.html" (where site.RegularPages "Section" "posts") -}}
+{{- $current := .RelPermalink -}}{{- $position := -1 -}}
+{{- range $i, $p := $pages -}}{{- if eq $p.RelPermalink $current -}}{{- $position = $i -}}{{- end -}}{{- end -}}
+{{- if and (ge $position 0) (gt (len $pages) 1) -}}
+<nav class="paginav">
+{{- if gt $position 0 -}}{{- with index $pages (sub $position 1) -}}<a class="prev" href="{{ .Permalink }}"><span class="title">« 上一篇</span><span>{{ .Title }}</span></a>{{- end -}}{{- end -}}
+{{- if lt $position (sub (len $pages) 1) -}}{{- with index $pages (add $position 1) -}}<a class="next" href="{{ .Permalink }}"><span class="title">下一篇 »</span><span>{{ .Title }}</span></a>{{- end -}}{{- end -}}
+</nav>{{- end -}}

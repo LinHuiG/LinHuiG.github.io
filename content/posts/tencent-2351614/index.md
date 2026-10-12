@@ -20,12 +20,16 @@
   "build": {
     "publishResources": false
   },
-  "description": "用A*算法让贪吃蛇跑满屏幕（顺手写了个贪吃蛇验证）。旧文归档，原始发表于 2019-09-07。"
+  "description": "用A*算法让贪吃蛇跑满屏幕（顺手写了个贪吃蛇验证）。旧文归档，原始发表于 2019-09-07。",
+  "original_date_text": "2019-09-07",
+  "original_sort_key": 20190907,
+  "original_year": 2019,
+  "date_precision": "day"
 }
 
 > **旧文迁移 · 补录说明**
 >
-> 原始发表：**2019-09-07**；本站迁移：**2026-10-12**。原始日期依据腾讯云页尾记录，正文与代码按历史版本归档。
+> 原始发表：**2019-09-07**；本站迁移：**2026-10-12**。正文与代码按历史版本归档。
 >
 > [腾讯云原文](https://cloud.tencent.com/developer/article/2351614) · [原个人博客地址](https://blog.linhui.fun/article/13)
 

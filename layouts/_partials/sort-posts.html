@@ -1,0 +1,9 @@
+{{- $items := slice -}}
+{{- range . -}}
+  {{- $key := .Params.original_sort_key | default 0 -}}
+  {{- if and (eq $key 0) (not .Date.IsZero) -}}{{- $key = int (.Date.Format "20060102") -}}{{- end -}}
+  {{- $items = $items | append (dict "page" . "key" $key) -}}
+{{- end -}}
+{{- $pages := slice -}}
+{{- range sort $items "key" "desc" -}}{{- $pages = $pages | append .page -}}{{- end -}}
+{{- return $pages -}}

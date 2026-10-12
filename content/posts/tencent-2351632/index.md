@@ -22,12 +22,16 @@
   "build": {
     "publishResources": false
   },
-  "description": "分布式一致性算法-RAFT算法的理解和SOFA-RAFT的改进。旧文归档，原始发表于 2022-02-21。"
+  "description": "分布式一致性算法-RAFT算法的理解和SOFA-RAFT的改进。旧文归档，原始发表于 2022-02-21。",
+  "original_date_text": "2022-02-21",
+  "original_sort_key": 20220221,
+  "original_year": 2022,
+  "date_precision": "day"
 }
 
 > **旧文迁移 · 补录说明**
 >
-> 原始发表：**2022-02-21**；本站迁移：**2026-10-12**。原始日期依据腾讯云页尾记录，正文与代码按历史版本归档。
+> 原始发表：**2022-02-21**；本站迁移：**2026-10-12**。正文与代码按历史版本归档。
 >
 > [腾讯云原文](https://cloud.tencent.com/developer/article/2351632) · [原个人博客地址](https://blog.linhui.fun/article/57)
 
