@@ -1,2 +1,7 @@
+{{- $key := crypto.SHA256 (replace .Inner "\r\n" "\n") -}}
+{{- with .Page.Resources.GetMatch (printf "transformer-assets/%s.svg" $key) -}}
+<pre class="mermaid" data-processed="true">{{ .Content | safeHTML }}</pre>
+{{- else -}}
 {{- .Page.Store.Set "hasMermaid" true -}}
-<pre class="mermaid">{{ .Inner }}</pre>
+<pre class="mermaid" data-source-hash="{{ $key }}">{{ .Inner }}</pre>
+{{- end -}}
