@@ -1,8 +1,8 @@
 {{ define "main" }}
-<header class="page-header"><h1>{{ .Title }}</h1><div class="post-description">在写下的文字里，找回一个想法。</div></header>
+<header class="page-header"><h1>{{ .Title }}</h1></header>
 <div id="searchbox" class="searchbox">
   <label for="searchInput" class="search-help">输入标题、关键词或正文内容</label>
-  <input id="searchInput" type="search" placeholder="试试：Markdown、笔记、记录" aria-label="搜索文章" autocomplete="off" maxlength="100" disabled>
+  <input id="searchInput" type="search" placeholder="搜索文章" aria-label="搜索文章" autocomplete="off" maxlength="100" disabled>
   <p id="searchStatus" class="search-status" role="status" aria-live="polite">正在载入文章索引…</p>
   <ul id="searchResults" class="searchResults" aria-label="搜索结果"></ul>
 </div>

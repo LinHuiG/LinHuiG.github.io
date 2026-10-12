@@ -1,0 +1,2 @@
+{{- $theme := resources.Get "js/appearance.js" | minify | fingerprint -}}
+<script src="{{ $theme.RelPermalink }}" integrity="{{ $theme.Data.Integrity }}"></script>

@@ -1,12 +1,1 @@
-<section class="journal-intro" aria-labelledby="intro-title">
-  <div class="intro-kicker"><span class="status-dot"></span> LINHUIG'S JOURNAL <span class="intro-year">/ 慢慢记录</span></div>
-  <h1 id="intro-title">把思考留下，<br><span>让积累发生。</span></h1>
-  <p>{{ site.Params.homeInfoParams.Content }}</p>
-  <div class="intro-actions">
-    <a class="journal-button" href="{{ "posts/" | relURL }}">开始阅读 <span aria-hidden="true">↗</span></a>
-    <a class="quiet-link" href="{{ "about/" | relURL }}">关于这个博客 <span aria-hidden="true">→</span></a>
-  </div>
-  <div class="journal-stats"><span>{{ len (where site.RegularPages "Section" "posts") }} 篇文章</span><span>{{ len site.Taxonomies.categories }} 个分类</span><a href="{{ "index.xml" | relURL }}">RSS 订阅 ↗</a></div>
-  <div class="intro-decoration" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
-</section>
-<div class="section-caption"><h2>最近的记录</h2><span>一点一滴，都算数。</span></div>
+{{/* Home uses the chronological post grid in layouts/list.html. */}}

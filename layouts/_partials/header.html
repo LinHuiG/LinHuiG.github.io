@@ -1,0 +1,20 @@
+<a class="skip-link" href="#main">跳到正文</a>
+<header class="header">
+  <nav class="header-nav" aria-label="主导航">
+    <a class="site-wordmark" href="{{ "" | absLangURL }}" accesskey="h">{{ site.Title }}</a>
+    <ul id="menu" class="menu">
+      {{- $current := . -}}
+      {{- range site.Menus.main -}}
+      <li><a href="{{ .URL | absLangURL }}"{{ if eq .URL $current.RelPermalink }} aria-current="page"{{ end }}>{{ .Name }}</a></li>
+      {{- end -}}
+    </ul>
+    <label class="appearance-control" hidden>
+      <span class="visually-hidden">外观</span>
+      <select id="appearance" aria-label="外观">
+        <option value="auto">跟随系统</option>
+        <option value="light">浅色</option>
+        <option value="dark">深色</option>
+      </select>
+    </label>
+  </nav>
+</header>

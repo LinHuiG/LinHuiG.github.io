@@ -4,7 +4,7 @@
 {{- $category := or (os.Getenv "GISCUS_CATEGORY") site.Params.giscus.category -}}
 {{- $categoryId := or (os.Getenv "GISCUS_CATEGORY_ID") site.Params.giscus.categoryId -}}
 <section class="comments-section" id="comments" aria-labelledby="comments-title">
-  <h2 id="comments-title" class="comments-heading">留一点想法</h2>
+  <h2 id="comments-title" class="comments-heading">评论</h2>
   <p class="comments-note">欢迎交流。评论通过 GitHub 账号登录，保存在本博客的 Discussions 中。</p>
   {{- if and $repo $repoId $categoryId }}
   <div id="comment-status" class="comment-status" role="status">评论加载中…</div>

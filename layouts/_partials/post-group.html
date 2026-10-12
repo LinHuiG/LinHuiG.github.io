@@ -1,0 +1,7 @@
+{{- $group := "tech" -}}
+{{- if intersect (.Params.categories | default slice) (slice "诗词" "文学") -}}
+  {{- $group = "writing" -}}
+{{- else if in (.Params.categories | default slice) "项目实践" -}}
+  {{- $group = "projects" -}}
+{{- end -}}
+{{- return $group -}}

@@ -34,11 +34,12 @@ buildFuture = false
 
 [params]
   env = 'production'
-  description = '记录技术、学习与日常。把零散的思考写下来，让积累慢慢发生。'
+  description = 'LinHuiG 的技术文章、诗文与项目。'
   author = 'LinHuiG'
   mainSections = ['posts']
   DateFormat = '2006.01.02'
   defaultTheme = 'auto'
+  disableThemeToggle = true
   ShowReadingTime = true
   ShowWordCount = true
   ShowPostNavLinks = true
@@ -53,11 +54,8 @@ buildFuture = false
   [params.assets]
     favicon = 'favicon.svg'
     safari_pinned_tab = 'favicon.svg'
-    theme_color = '#286451'
+    theme_color = '#f5f5f7'
     disableHLJS = true
-  [params.homeInfoParams]
-    Title = '把思考留下，\n让积累发生。'
-    Content = '记录技术、学习与日常。那些暂时零散的想法，值得有一个慢慢生长的地方。'
   [params.giscus]
     repo = 'LinHuiG/LinHuiG.github.io'
     repoId = 'R_kgDOVFlPbQ'
