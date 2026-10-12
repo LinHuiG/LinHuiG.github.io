@@ -14,10 +14,13 @@
   const timer = window.setTimeout(fallback, 18000);
   window.addEventListener('message', event => {
     if (event.origin !== 'https://giscus.app' || event.source !== host.querySelector('iframe')?.contentWindow || !event.data?.giscus) return;
-    if (event.data.giscus.error) {
+    const error = event.data.giscus.error;
+    // giscus creates a discussion on the first comment; an empty thread is ready.
+    const emptyDiscussion = typeof error === 'string' && error.includes('Discussion not found');
+    if (error && !emptyDiscussion) {
       window.clearTimeout(timer);
       fallback();
-    } else if (event.data.giscus.resizeHeight) {
+    } else if (event.data.giscus.resizeHeight || emptyDiscussion) {
       window.clearTimeout(timer);
       status.hidden = true;
     }
