@@ -17,7 +17,7 @@
     "注意力机制",
     "学习笔记"
   ],
-  "description": "我前几年完全无法理解的多头注意力模型，今天能理解了！从分词、Embedding、qkv 到 RoPE、多头注意力和 MoE，记下这次理解的过程。"
+  "description": "终于理解了Attention is all you need了。记录一下"
 }
 
 今天发现，我前几年完全无法理解的多头注意力模型，被 Astra 大人拆碎喂过来后，我能理解了！
