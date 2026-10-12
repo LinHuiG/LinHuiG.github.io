@@ -1,0 +1,98 @@
+baseURL = 'https://linhuig.github.io/'
+locale = 'zh-CN'
+defaultContentLanguage = 'zh'
+title = '相思不扫久积弥厚'
+theme = 'PaperMod'
+hasCJKLanguage = true
+enableRobotsTXT = true
+summaryLength = 100
+timeZone = 'Asia/Shanghai'
+buildDrafts = false
+buildFuture = false
+
+[pagination]
+  pagerSize = 8
+[outputs]
+  home = ['HTML', 'RSS', 'JSON']
+[taxonomies]
+  category = 'categories'
+  tag = 'tags'
+[permalinks]
+  posts = '/posts/:slug/'
+[caches.images]
+  dir = ':cacheDir/images'
+[markup.highlight]
+  noClasses = false
+[markup.goldmark.renderer]
+  unsafe = false
+[markup.tableOfContents]
+  startLevel = 2
+  endLevel = 3
+  ordered = false
+[security.funcs]
+  getenv = ['^HUGO_', '^CI$', '^GISCUS_']
+
+[params]
+  env = 'production'
+  description = '记录技术、学习与日常。把零散的思考写下来，让积累慢慢发生。'
+  author = 'LinHuiG'
+  mainSections = ['posts']
+  DateFormat = '2006.01.02'
+  defaultTheme = 'auto'
+  ShowReadingTime = true
+  ShowWordCount = true
+  ShowPostNavLinks = true
+  ShowBreadCrumbs = true
+  ShowCodeCopyButtons = true
+  ShowRssButtonInSectionTermList = true
+  ShowPageNums = true
+  showtoc = true
+  tocopen = false
+  comments = true
+  disableSpecial1stPost = true
+  [params.assets]
+    favicon = 'favicon.svg'
+    safari_pinned_tab = 'favicon.svg'
+    theme_color = '#286451'
+    disableHLJS = true
+  [params.homeInfoParams]
+    Title = '把思考留下，\n让积累发生。'
+    Content = '记录技术、学习与日常。那些暂时零散的想法，值得有一个慢慢生长的地方。'
+  [params.giscus]
+    repo = 'LinHuiG/LinHuiG.github.io'
+    repoId = ''
+    category = 'Announcements'
+    categoryId = ''
+  [params.fuseOpts]
+    isCaseSensitive = false
+    shouldSort = true
+    ignoreLocation = true
+    threshold = 0.25
+    minMatchCharLength = 1
+    keys = ['title', 'summary', 'content']
+    limit = 30
+
+[[menu.main]]
+  name = '文章'
+  url = '/posts/'
+  weight = 10
+[[menu.main]]
+  name = '分类'
+  url = '/categories/'
+  weight = 20
+[[menu.main]]
+  name = '标签'
+  url = '/tags/'
+  weight = 30
+[[menu.main]]
+  name = '归档'
+  url = '/archives/'
+  weight = 40
+[[menu.main]]
+  name = '搜索'
+  url = '/search/'
+  weight = 50
+[[menu.main]]
+  name = '关于'
+  url = '/about/'
+  weight = 60

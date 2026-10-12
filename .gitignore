@@ -1,0 +1,8 @@
+/public/
+/resources/
+/.hugo_build.lock
+/.tools/
+/.cache/
+.DS_Store
+Thumbs.db
+*.log

@@ -1,0 +1,19 @@
+{{- if eq .Section "posts" -}}
+{{- $repo := or (os.Getenv "GISCUS_REPO") site.Params.giscus.repo -}}
+{{- $repoId := or (os.Getenv "GISCUS_REPO_ID") site.Params.giscus.repoId -}}
+{{- $category := or (os.Getenv "GISCUS_CATEGORY") site.Params.giscus.category -}}
+{{- $categoryId := or (os.Getenv "GISCUS_CATEGORY_ID") site.Params.giscus.categoryId -}}
+<section class="comments-section" id="comments" aria-labelledby="comments-title">
+  <h2 id="comments-title" class="comments-heading">留一点想法</h2>
+  <p class="comments-note">欢迎交流。评论通过 GitHub 账号登录，保存在本博客的 Discussions 中。</p>
+  {{- if and $repo $repoId $categoryId }}
+  <div id="comment-status" class="comment-status" role="status">评论加载中…</div>
+  <div id="giscus-container" class="giscus" data-repo="{{ $repo }}" data-repo-id="{{ $repoId }}" data-category="{{ $category }}" data-category-id="{{ $categoryId }}"></div>
+  <noscript><p>开启 JavaScript 后可在这里评论，也可以前往 <a href="https://github.com/{{ $repo }}/discussions">GitHub Discussions</a>。</p></noscript>
+  {{- $js := resources.Get "js/comments.js" | minify | fingerprint }}
+  <script src="{{ $js.RelPermalink }}" integrity="{{ $js.Data.Integrity }}" defer></script>
+  {{- else }}
+  <p class="comment-status">评论区正在准备中，启用后可通过 GitHub 账号参与交流。</p>
+  {{- end }}
+</section>
+{{- end -}}

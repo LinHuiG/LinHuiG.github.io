@@ -1,0 +1,20 @@
+{{- $src := .Destination -}}
+{{- $width := 0 -}}
+{{- $height := 0 -}}
+{{- $srcset := "" -}}
+{{- $resource := .PageInner.Resources.GetMatch (strings.TrimPrefix "./" .Destination) -}}
+{{- with $resource -}}
+  {{- if and (eq .ResourceType "image") (in (slice "jpeg" "png" "webp") .MediaType.SubType) -}}
+    {{- $large := .Fit "1600x1600 webp q82" -}}
+    {{- $src = $large.RelPermalink -}}
+    {{- $width = $large.Width -}}
+    {{- $height = $large.Height -}}
+    {{- $small := .Fit "640x640 webp q80" -}}
+    {{- if ne $small.Width $large.Width -}}
+      {{- $srcset = printf "%s %dw, %s %dw" $small.RelPermalink $small.Width $large.RelPermalink $large.Width -}}
+    {{- end -}}
+  {{- else -}}
+    {{- $src = .RelPermalink -}}
+  {{- end -}}
+{{- end -}}
+<img src="{{ $src | safeURL }}" alt="{{ .Text }}"{{ with .Title }} title="{{ . }}"{{ end }}{{ if $width }} width="{{ $width }}" height="{{ $height }}"{{ end }}{{ with $srcset }} srcset="{{ . }}" sizes="(max-width: 860px) calc(100vw - 48px), 820px"{{ end }} loading="lazy" decoding="async">
