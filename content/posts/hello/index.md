@@ -6,7 +6,7 @@ description: 为零散的思考留一个位置，也为之后的记录开一个�
 summary: 为零散的思考留一个位置。从一段文字、一个问题、一次小小的发现开始。
 categories: [日常记录]
 tags: [开始, 记录]
-draft: false
+draft: true
 build:
   publishResources: false
 ---

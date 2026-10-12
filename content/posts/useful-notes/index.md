@@ -6,7 +6,7 @@ description: 记下背景、过程与结论，让之后的自己看得懂。
 summary: 一份笔记的价值，不只在写下的那一刻。留下足够的上下文，才能在下次需要时重新用起来。
 categories: [学习整理]
 tags: [笔记, 方法, 记录]
-draft: false
+draft: true
 build:
   publishResources: false
 ---

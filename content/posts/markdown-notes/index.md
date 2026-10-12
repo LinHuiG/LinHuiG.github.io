@@ -6,7 +6,7 @@ description: 标题、代码、表格与配图，写作常用格式的一页备�
 summary: 把精力放在内容上。用简单的标题、列表、代码块和图片，组织一篇清楚易读的文章。
 categories: [写作笔记]
 tags: [Markdown, 写作, 入门]
-draft: false
+draft: true
 build:
   publishResources: false
 ---
@@ -66,4 +66,4 @@ for article in Path('content/posts').glob('*/index.md'):
 
 ## 发布前再看一遍
 
-检查标题是否清楚、链接是否正确，以及图片有没有文字说明。将草稿字段改为 `draft: false` 后，提交到主分支即可触发自动发布。
+检查标题是否清楚、链接是否正确，以及图片有没有文字说明。将草稿字段改为 `draft: true` 后，提交到主分支即可触发自动发布。
