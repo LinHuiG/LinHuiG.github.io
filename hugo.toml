@@ -60,9 +60,9 @@ buildFuture = false
     Content = '记录技术、学习与日常。那些暂时零散的想法，值得有一个慢慢生长的地方。'
   [params.giscus]
     repo = 'LinHuiG/LinHuiG.github.io'
-    repoId = ''
+    repoId = 'R_kgDOVFlPbQ'
     category = 'Announcements'
-    categoryId = ''
+    categoryId = 'DIC_kwDOVFlPbc4DH_n0'
   [params.fuseOpts]
     isCaseSensitive = false
     shouldSort = true
