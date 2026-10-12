@@ -20,36 +20,9 @@ env:
 
 jobs:
   build:
-    permissions:
-      contents: write
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - name: Import reviewed publication
-        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && hashFiles('reviewed-publication.zip') != ''
-        shell: bash
-        run: |
-          set -euo pipefail
-          echo "7e06ea4c2bfaa263a8764bd5d730766b2aa76047e55830ee7e1d1e40930bac25  reviewed-publication.zip" | sha256sum --check --strict
-          python3 - <<'PY'
-          import zipfile
-          from pathlib import Path
-          expected = ['.github/workflows/pages.yml', '.hugo_build.lock', 'MIGRATION.md', 'README.md', 'content/posts/bishangguan/index.md', 'content/posts/cat-at-work/index.md', 'content/posts/chess-online/index.md', 'content/posts/chunriyan/index.md', 'content/posts/chuyunfei/index.md', 'content/posts/hushangyi/index.md', 'content/posts/manong/index.md', 'content/posts/message-id-slots/index.md', 'content/posts/pangwu/index.md', 'content/posts/tencent-2351610/index.md', 'content/posts/tencent-2351614/index.md', 'content/posts/tencent-2351615/index.md', 'content/posts/tencent-2351618/index.md', 'content/posts/tencent-2351619/index.md', 'content/posts/tencent-2351620/index.md', 'content/posts/tencent-2351621/index.md', 'content/posts/tencent-2351623/index.md', 'content/posts/tencent-2351625/index.md', 'content/posts/tencent-2351627/index.md', 'content/posts/tencent-2351629/index.md', 'content/posts/tencent-2351630/index.md', 'content/posts/tencent-2351632/index.md', 'content/posts/tencent-2351637/index.md', 'content/posts/tencent-2351639/index.md', 'content/posts/tencent-2351641/index.md', 'content/posts/tencent-2351642/index.md', 'content/posts/tencent-2351644/index.md', 'content/posts/tencent-2351645/index.md', 'content/posts/tencent-2351647/index.md', 'content/posts/tencent-2351648/index.md', 'content/posts/tencent-2351649/index.md', 'content/posts/tencent-2351650/index.md', 'content/posts/tencent-2351651/index.md', 'content/posts/tencent-2351652/index.md', 'content/posts/tencent-2351653/index.md', 'content/posts/tencent-2351654/index.md', 'content/posts/tencent-2351655/index.md', 'content/posts/tencent-2351656/index.md', 'content/posts/windows-migration/index.md', 'content/posts/xian/index.md', 'layouts/_partials/post_meta.html', 'layouts/_partials/post_nav_links.html', 'layouts/_partials/sort-posts.html', 'layouts/_partials/templates/opengraph.html', 'layouts/_partials/templates/schema_json.html', 'layouts/archives.html', 'layouts/index.json', 'layouts/list.html', 'layouts/rss.xml', 'static/downloads/windows-profile-migration.zip', 'static/downloads/windows-profile-migration/SKILL.md', 'static/downloads/windows-profile-migration/references/pitfalls.md']
-          with zipfile.ZipFile('reviewed-publication.zip') as z:
-              assert sorted(z.namelist()) == expected
-              for name in expected:
-                  target = Path(name)
-                  assert not target.is_absolute() and '..' not in target.parts
-                  target.parent.mkdir(parents=True, exist_ok=True)
-                  target.write_bytes(z.read(name))
-          PY
-          git restore -- .github/workflows/pages.yml
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -- content/posts layouts static/downloads README.md MIGRATION.md
-          git rm -- reviewed-publication.zip
-          git commit -m "Publish 11 reviewed posts and sort all 40 by original writing date"
-          git push origin HEAD:main
       - name: Install pinned Hugo
         shell: bash
         run: |
