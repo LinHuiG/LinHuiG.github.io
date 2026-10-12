@@ -20,35 +20,9 @@ env:
 
 jobs:
   build:
-    permissions:
-      contents: write
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - name: Import approved adaptive blog style
-        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && hashFiles('style-publication.zip') != ''
-        shell: bash
-        run: |
-          set -euo pipefail
-          echo "dd690373d49c3dbbc4f0992515b5206457b5f4950edbc19ca7c231b15393b121  style-publication.zip" | sha256sum --check --strict
-          python3 - <<'PY'
-          import zipfile
-          from pathlib import Path
-          expected = ['README.md', 'assets/css/extended/journal.css', 'assets/css/extended/mermaid.css', 'assets/js/appearance.js', 'content/posts/_index.md', 'content/projects/_index.md', 'content/tech/_index.md', 'content/writing/_index.md', 'hugo.toml', 'layouts/_partials/comments.html', 'layouts/_partials/extend_head.html', 'layouts/_partials/header.html', 'layouts/_partials/home_info.html', 'layouts/_partials/post-group.html', 'layouts/baseof.html', 'layouts/list.html', 'layouts/search.html', 'static/apple-touch-icon.png', 'static/favicon-16x16.png', 'static/favicon-32x32.png', 'static/favicon.svg']
-          with zipfile.ZipFile('style-publication.zip') as z:
-              assert sorted(z.namelist()) == expected
-              for name in expected:
-                  path = Path(name)
-                  assert not path.is_absolute() and '..' not in path.parts
-                  path.parent.mkdir(parents=True, exist_ok=True)
-                  path.write_bytes(z.read(name))
-          PY
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -- README.md assets/css/extended/journal.css assets/css/extended/mermaid.css assets/js/appearance.js content/posts/_index.md content/projects/_index.md content/tech/_index.md content/writing/_index.md hugo.toml layouts/_partials/comments.html layouts/_partials/extend_head.html layouts/_partials/header.html layouts/_partials/home_info.html layouts/_partials/post-group.html layouts/baseof.html layouts/list.html layouts/search.html static/apple-touch-icon.png static/favicon-16x16.png static/favicon-32x32.png static/favicon.svg
-          git rm -- style-publication.zip
-          git commit -m "Apply adaptive light gray and black blog design"
-          git push origin HEAD:main
       - name: Install pinned Hugo
         shell: bash
         run: |
