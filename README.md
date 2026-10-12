@@ -4,9 +4,9 @@ LinHuiG 的个人博客。Hugo + PaperMod，网址为 `https://linhuig.github.io
 
 ## 项目说明
 
-页面、搜索、文章模板、图片处理、giscus 接入代码和自动部署工作流已包含在此项目中。`hugo.toml` 中的 giscus 两个 ID 留空，必须在目标仓库实际创建并开启 Discussions 后获取，不能填虚构值。
+页面、搜索、文章模板、图片处理、giscus 评论和自动部署工作流已包含在此项目中。`hugo.toml` 已配置本仓库的真实 giscus ID，评论保存在 Announcements 分类。giscus 仅安装到 `LinHuiG/LinHuiG.github.io`。
 
-首次部署需要开启 GitHub Pages 的 GitHub Actions 来源。评论需要完成下面的 giscus 安装和 ID 配置；未配置时页面会显示准备提示。
+博客已于 2026-10-12 部署到 GitHub Pages，发布来源为 GitHub Actions。中文搜索与线上评论框已验证。日常更新只需修改 `content/posts/` 中的 Markdown 并提交到 `main`，不需要再运行首次上线脚本。读者通过评论框的 GitHub 登录入口授权后即可留言；第一条留言或回应会自动创建文章讨论。
 
 三篇初始文章均明确标记为示例，可直接改写或删除。关于页使用用户提供的 GitHub 名称，不包含私人邮箱或虚构的履历。
 
@@ -28,7 +28,7 @@ LinHuiG 的个人博客。Hugo + PaperMod，网址为 `https://linhuig.github.io
 
 构建结果位于 `public`，无需提交 Git；工作流会重新生成。
 
-## 首次上线
+## 在新仓库首次上线（已有站点无需重复）
 
 1. 安装 [GitHub CLI](https://cli.github.com/)，运行 `gh auth login`，登录 **LinHuiG**。凭据只交给官方登录流程，不要粘贴进聊天或代码。
 2. 在此项目目录执行：
@@ -133,5 +133,5 @@ git push
 - 用独立测试文章验证图片生成 1600×800、640×320 WebP，原始图片不发布；测试文章不包含在交付源码中。
 - 草稿不进入正式页面和搜索索引；单篇关闭评论生效。
 - 搜索中文、无结果、清空、键盘操作和索引失败提示通过 Node 模拟 DOM 测试；giscus 参数、主题同步、错误回退通过同类测试。
-- PowerShell 脚本完成语法检查。GitHub 创建仓库、推送、Actions 发布与真实 giscus 交互尚未运行，需要账号连接。
-- 浏览器视觉检查未完成：本机后台预览启动被执行审批策略拒绝，内置浏览器也禁止打开本地 `file:` 页面。以上代码测试不等同于桌面和手机浏览器实测。
+- PowerShell 脚本完成语法检查。通过 GitHub 网页完成仓库创建、源码提交、Pages 设置及 giscus 安装；最新自动构建和部署成功。
+- 线上桌面首页、中文搜索、文章评论框与 390 像素手机布局已实测，无横向溢出。新文章无讨论的正常空状态不会误报加载失败。未代发测试留言。
