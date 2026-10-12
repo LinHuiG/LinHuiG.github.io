@@ -20,9 +20,35 @@ env:
 
 jobs:
   build:
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+      - name: Import reviewed Tencent archive
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && hashFiles('tencent-migration.zip') != ''
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "c559e89ad8a4bf7298e3a71a28bb8661e756db28534fb18bc8da0d1d240dec97  tencent-migration.zip" | sha256sum --check --strict
+          python3 - <<'PY'
+          import zipfile
+          from pathlib import Path
+          expected = ['content/posts/hello/index.md', 'content/posts/markdown-notes/index.md', 'content/posts/tencent-2351610/index.md', 'content/posts/tencent-2351614/index.md', 'content/posts/tencent-2351615/index.md', 'content/posts/tencent-2351618/image-01.png', 'content/posts/tencent-2351618/image-02.png', 'content/posts/tencent-2351618/index.md', 'content/posts/tencent-2351619/index.md', 'content/posts/tencent-2351620/index.md', 'content/posts/tencent-2351621/index.md', 'content/posts/tencent-2351623/index.md', 'content/posts/tencent-2351625/index.md', 'content/posts/tencent-2351627/index.md', 'content/posts/tencent-2351629/index.md', 'content/posts/tencent-2351630/index.md', 'content/posts/tencent-2351632/index.md', 'content/posts/tencent-2351637/index.md', 'content/posts/tencent-2351639/image-01.png', 'content/posts/tencent-2351639/index.md', 'content/posts/tencent-2351641/index.md', 'content/posts/tencent-2351642/index.md', 'content/posts/tencent-2351644/image-01.png', 'content/posts/tencent-2351644/image-02.png', 'content/posts/tencent-2351644/image-03.png', 'content/posts/tencent-2351644/index.md', 'content/posts/tencent-2351645/index.md', 'content/posts/tencent-2351647/image-01.png', 'content/posts/tencent-2351647/index.md', 'content/posts/tencent-2351648/index.md', 'content/posts/tencent-2351649/index.md', 'content/posts/tencent-2351650/index.md', 'content/posts/tencent-2351651/index.md', 'content/posts/tencent-2351652/index.md', 'content/posts/tencent-2351653/index.md', 'content/posts/tencent-2351654/index.md', 'content/posts/tencent-2351655/index.md', 'content/posts/tencent-2351656/index.md', 'content/posts/useful-notes/index.md', 'MIGRATION.md', 'README.md']
+          with zipfile.ZipFile('tencent-migration.zip') as z:
+              assert sorted(z.namelist()) == sorted(expected)
+              for name in expected:
+                  assert not name.startswith('/') and '..' not in Path(name).parts
+                  target = Path(name)
+                  target.parent.mkdir(parents=True, exist_ok=True)
+                  target.write_bytes(z.read(name))
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- content/posts/tencent-* content/posts/hello/index.md content/posts/markdown-notes/index.md content/posts/useful-notes/index.md MIGRATION.md README.md
+          git rm -- tencent-migration.zip
+          git commit -m "Migrate 29 reviewed Tencent articles with original dates"
+          git push origin HEAD:main
       - name: Install pinned Hugo
         shell: bash
         run: |
