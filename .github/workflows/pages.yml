@@ -20,9 +20,35 @@ env:
 
 jobs:
   build:
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+      - name: Import approved Transformer article
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && hashFiles('transformer-publication.zip') != ''
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "716585bb0434548ac4bf3bd1008227f1f194de56c8fadd8e52335f2b62df09f5  transformer-publication.zip" | sha256sum --check --strict
+          python3 - <<'PY'
+          import zipfile
+          from pathlib import Path
+          expected = ['THIRD_PARTY_NOTICES.md', 'assets/css/extended/mermaid.css', 'assets/js/mermaid-loader.js', 'content/posts/transformer-notes/index.md', 'content/posts/transformer-notes/transformer-assets/rope-rotation.svg', 'layouts/_markup/render-codeblock-mermaid.html', 'layouts/_partials/mermaid.html', 'layouts/baseof.html', 'static/vendor/mermaid/LICENSE', 'static/vendor/mermaid/mermaid-10.9.3.min.js']
+          with zipfile.ZipFile('transformer-publication.zip') as z:
+              assert sorted(z.namelist()) == expected
+              for name in expected:
+                  path = Path(name)
+                  assert not path.is_absolute() and '..' not in path.parts
+                  path.parent.mkdir(parents=True, exist_ok=True)
+                  path.write_bytes(z.read(name))
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- content/posts/transformer-notes assets/css/extended/mermaid.css assets/js/mermaid-loader.js layouts static/vendor/mermaid THIRD_PARTY_NOTICES.md
+          git rm -- transformer-publication.zip
+          git commit -m "Publish approved Transformer article with diagrams"
+          git push origin HEAD:main
       - name: Install pinned Hugo
         shell: bash
         run: |
