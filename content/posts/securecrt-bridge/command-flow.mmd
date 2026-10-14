@@ -1,0 +1,24 @@
+sequenceDiagram
+    participant AI as AI / CLI
+    participant B as Rust Broker
+    participant D as Rust DLL（SecureCRT 内）
+    participant T as 原有 SSH 会话
+
+    AI->>B: HTTP：提交命令
+    B-->>AI: 返回任务 ID
+
+    par DLL 领取并执行任务
+        loop 空闲时约每 200ms，直到领取到任务
+            D->>B: POST /actor/poll：上报屏幕、查询任务
+            B-->>D: 返回待执行任务，或暂无任务
+        end
+        D->>T: 调用内置方法，发送命令
+        Note over T: 通过原有 SSH 连接执行<br/>命令和输出仍显示在用户窗口
+        T-->>D: 读取输出和结束标记
+        D->>B: POST /actor/result：回传输出、退出码
+    and CLI 等待结果
+        loop 约每 150ms，直到任务结束或等待到期
+            AI->>B: GET /jobs/{id}：查询任务
+            B-->>AI: 返回状态；完成后附带结果
+        end
+    end

@@ -1,0 +1,12 @@
+flowchart TB
+    U["用户"] <-->|"操作和查看"| UI
+    subgraph CRT["SecureCRT 进程"]
+        UI["原有终端界面"]
+        T["原有 SSH 会话"]
+        DLL["Rust COM 引擎 DLL"]
+        UI <-->|"输入、显示输出"| T
+        DLL <-->|"直接调用内置方法，读写同一会话"| T
+    end
+    T <-->|"原有 SSH 连接"| S["远程服务器"]
+    AI["AI / CLI"] <-->|"HTTP 请求与 JSON 结果"| B["Rust Broker"]
+    DLL <-->|"HTTP：轮询任务、回传结果"| B

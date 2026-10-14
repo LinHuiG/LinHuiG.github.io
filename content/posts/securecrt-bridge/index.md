@@ -10,7 +10,7 @@ categories: [技术实践, 项目]
 tags: [Rust, SecureCRT, SSH, AI, Windows]
 draft: false
 build:
-  publishResources: false
+  publishResources: true
 ---
 
 平常连接服务器时，我会先在堡垒机页面点击 SSH，由本地客户端打开 SecureCRT，完成登录。这个流程已经能用，也保留了现有的认证和审计机制。
@@ -41,20 +41,7 @@ build:
 
 运行时有两个主要组件：独立运行的 **Rust Broker**，以及加载在 SecureCRT 进程里的 **Rust COM 引擎 DLL**。AI 通过 CLI 或 HTTP 找到 Broker，DLL 主动向 Broker 领取任务，再调用 SecureCRT 内置的终端读写方法。
 
-```mermaid
-flowchart TB
-    U["用户"] <-->|"操作和查看"| UI
-    subgraph CRT["SecureCRT 进程"]
-        UI["原有终端界面"]
-        T["原有 SSH 会话"]
-        DLL["Rust COM 引擎 DLL"]
-        UI <-->|"输入、显示输出"| T
-        DLL <-->|"直接调用内置方法，读写同一会话"| T
-    end
-    T <-->|"原有 SSH 连接"| S["远程服务器"]
-    AI["AI / CLI"] <-->|"HTTP 请求与 JSON 结果"| B["Rust Broker"]
-    DLL <-->|"HTTP：轮询任务、回传结果"| B
-```
+![SecureCRT Bridge 架构：原界面与 SSH 连接保持不变，DLL 从旁读写会话并轮询 Broker](architecture.svg)
 
 图中的 DLL 是从旁边接入终端的控制分支。用户原来的界面、键盘输入和 SSH 连接都由 SecureCRT 处理，DLL 不承担终端绘制或 SSH 流量转发。
 
@@ -94,32 +81,7 @@ Broker 只监听 `127.0.0.1`，从 `18765` 到 `18799` 中选择一个可用端�
 
 登录接入后，DLL 会持续向 Broker 上报会话信息。AI 先列出会话、读取屏幕，再为目标会话申请写入租约。下面从命令提交开始，展示两个并行发生的轮询过程：
 
-```mermaid
-sequenceDiagram
-    participant AI as AI / CLI
-    participant B as Rust Broker
-    participant D as Rust DLL（SecureCRT 内）
-    participant T as 原有 SSH 会话
-
-    AI->>B: HTTP：提交命令
-    B-->>AI: 返回任务 ID
-
-    par DLL 领取并执行任务
-        loop 空闲时约每 200ms，直到领取到任务
-            D->>B: POST /actor/poll：上报屏幕、查询任务
-            B-->>D: 返回待执行任务，或暂无任务
-        end
-        D->>T: 调用内置方法，发送命令
-        Note over T: 通过原有 SSH 连接执行<br/>命令和输出仍显示在用户窗口
-        T-->>D: 读取输出和结束标记
-        D->>B: POST /actor/result：回传输出、退出码
-    and CLI 等待结果
-        loop 约每 150ms，直到任务结束或等待到期
-            AI->>B: GET /jobs/{id}：查询任务
-            B-->>AI: 返回状态；完成后附带结果
-        end
-    end
-```
+![命令数据流程：DLL 轮询领取任务与 CLI 查询结果并行进行](command-flow.svg)
 
 **任务由 DLL 主动领取。** Broker 不会主动连接 SecureCRT，也不在 HTTP 请求到达时直接操作终端。DLL 空闲循环每次结束后等待约 200 毫秒，实际间隔还包含屏幕读取和请求耗时；执行命令期间会等待终端输出，完成后回传结果，再恢复轮询。
 
