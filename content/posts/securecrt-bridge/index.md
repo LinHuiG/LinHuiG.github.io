@@ -10,7 +10,7 @@ categories: [技术实践, 项目]
 tags: [Rust, SecureCRT, SSH, AI, Windows]
 draft: false
 build:
-  publishResources: true
+  publishResources: false
 ---
 
 平常连接服务器时，我会先在堡垒机页面点击 SSH，由本地客户端打开 SecureCRT，完成登录。这个流程已经能用，也保留了现有的认证和审计机制。
@@ -221,11 +221,13 @@ SecureCRTBridge/
 
 ## 让其他 AI 对话接入
 
-当前安装器默认把 `securecrt-bridge` skill 放到 `%USERPROFILE%\.codex\skills\securecrt-bridge\SKILL.md`；设置了 `CODEX_HOME` 时，改为该目录下的 `skills/securecrt-bridge/SKILL.md`。
+0.1.7 的安装窗口提供“安装 AI Skill”总开关和客户端复选框列表。检测到的本机 Agent 默认勾选，支持 Codex、DeepSeek Harness、Claude Code、Cursor、GitHub Copilot、Gemini CLI 和 OpenCode；也可以取消全部，或为其他客户端添加多个自定义目录。
 
-skill 写的是操作约定：先发现安装路径，再列会话、读屏幕、申请租约，执行结束后释放。它不保存服务器密码或本机令牌，也不授予新的系统权限。
+检测只检查客户端配置目录、支持的环境变量和 PATH 入口，不启动 Agent。列表和安装日志显示完整的 `SKILL.md` 路径，选中一行后可以修改目录。以 DeepSeek Harness 为例，默认使用 `$DSH_HOME/skills/securecrt-bridge/SKILL.md`，未设置时使用 `~/.dsh/skills/securecrt-bridge/SKILL.md`。
 
-这部分目前按 Codex 的目录约定安装，即使未安装 Codex 也会创建对应目录；安装界面暂未提供其他客户端的 skill 路径选择。其他 AI 客户端可以使用通用 CLI 或 HTTP 接口，但 skill 的存放路径和加载方式需要按各客户端的约定配置。
+skill 使用标准的 `name`、`description` 和 Markdown 正文，说明如何发现安装路径、列出会话、读屏幕、申请租约及释放。它不保存服务器密码或本机令牌，也不授予新的系统权限。各客户端仍需启用本地 Skill 加载和命令工具；完整目录表与兼容边界见仓库的 [客户端目录说明](https://github.com/LinHuiG/securecrt-bridge/blob/main/docs/AGENT_SKILLS.md)。
+
+安装记录保存所有实际目标目录。升级取消勾选某个客户端时，只移除未被用户修改的旧 Skill；修改过的内容会保留。卸载也按这些记录处理，不删除客户端或其他 Skill。
 
 读取会话、屏幕和既有结果，可以在 AI 客户端中为固定的只读子命令配置长期允许规则；远程写入按具体操作、目标和已授权范围处理。同一任务内的同类操作可以复用已有授权，但 `exec` 本身能执行任意 shell 命令，不能整体当成只读接口放行。桥接的会话租约与客户端的工具审批分别生效，配置方法见仓库的 [审批说明](https://github.com/LinHuiG/securecrt-bridge/blob/main/docs/APPROVALS.md)。
 
