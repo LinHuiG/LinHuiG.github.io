@@ -1,6 +1,7 @@
 ---
 title: "SecureCRT Bridge：让 AI 和我共用已经登录的 SSH 终端"
 date: 2026-10-13T22:00:00+08:00
+lastmod: 2026-10-14
 slug: securecrt-bridge
 author: LinHuiG
 description: "用 Rust 为 SecureCRT 增加本地接口，保留堡垒机登录和原终端界面，支持后台多会话、自动接入与原生安装器。"
@@ -36,40 +37,105 @@ build:
 
 这里依赖的是 SecureCRT 提供的脚本接口。Windows 上支持 ActiveX 脚本语言，脚本能访问终端对象；官方也提供了用 `ReadString()` 采集命令输出的示例。参见 [Scripting FAQ](https://www.vandyke.com/support/securecrt/scripting_faq.html) 和 [ReadString 示例](https://www.vandyke.com/support/tips/readstring.html)。
 
-## 三部分实现
+## 实现：后台调度与进程内调用
 
-```text
-AI / CLI
-   │  带本机令牌的 HTTP 请求
-   ▼
-Rust Broker（127.0.0.1）
-   ▲  轮询任务、报告屏幕和结果
-   │
-Rust Active Scripting COM 引擎
-   │  SecureCRT 脚本 API
-   ▼
-已经登录的 SSH 标签页 ← 用户仍然可以直接操作
+运行时有两个主要组件：独立运行的 **Rust Broker**，以及加载在 SecureCRT 进程里的 **Rust COM 引擎 DLL**。AI 通过 CLI 或 HTTP 找到 Broker，DLL 主动向 Broker 领取任务，再调用 SecureCRT 内置的终端读写方法。
+
+```mermaid
+flowchart TB
+    U["用户"] <-->|"操作和查看"| UI
+    subgraph CRT["SecureCRT 进程"]
+        UI["原有终端界面"]
+        T["原有 SSH 会话"]
+        DLL["Rust COM 引擎 DLL"]
+        UI <-->|"输入、显示输出"| T
+        DLL <-->|"直接调用内置方法，读写同一会话"| T
+    end
+    T <-->|"原有 SSH 连接"| S["远程服务器"]
+    AI["AI / CLI"] <-->|"HTTP 请求与 JSON 结果"| B["Rust Broker"]
+    DLL <-->|"HTTP：轮询任务、回传结果"| B
 ```
 
-**Broker** 维护会话、租约、任务和结果。它只监听回环地址，所有接口都要求本机令牌。CLI 自动读取本机发现信息，不要求使用者手工复制令牌。
+图中的 DLL 是从旁边接入终端的控制分支。用户原来的界面、键盘输入和 SSH 连接都由 SecureCRT 处理，DLL 不承担终端绘制或 SSH 流量转发。
 
-**接入引擎** 是 Rust 实现的 Active Scripting COM DLL，注册独立的 `SecureCRTBridge.Native`，不替换系统已有脚本引擎。SecureCRT 运行登录钩子时加载它，再通过宿主暴露的 `crt` 对象访问终端。
+### Broker：保存状态和调度任务
 
-**安装器** 负责查找路径、备份并修改登录配置、写入 EXE 与 DLL、注册当前用户的 COM 组件，以及配置启动项和 skill。耗时操作放在工作线程，界面接收进度事件，因此日志能随着实际步骤更新。
+Broker 由 `securecrt-bridge.exe serve` 启动，维护会话列表、最近一次屏幕快照、写入租约、任务状态和执行结果。它是普通的用户进程，通过当前用户的 Windows 启动项自动运行。
 
-安装记录保存每项配置的修改前后值和自有文件的哈希。卸载时，如果某项仍保持桥接安装时的值，就恢复原值；如果用户后来改过，就保留并提示。这样可以避免把安装之后的新配置一并覆盖掉。
+AI 提交命令后，Broker 先记录任务；对应 DLL 实例下一次轮询时，Broker 才在 HTTP 响应中返回任务。不同会话独立处理，同一会话的 AI 写入由租约和忙碌状态协调。
 
-## 多标签页的关键：绑定对象，而不是焦点
+### DLL：直接调用 SecureCRT 的内置方法
 
-通过鼠标键盘模拟操作终端，很容易受当前焦点、弹窗和标签顺序影响。共享终端尤其需要避免这种不确定性。
+DLL 使用 Rust 实现 `IActiveScript` 和 `IActiveScriptParse64`，以 `SecureCRTBridge.Native` 注册为当前用户的 COM 脚本引擎。SecureCRT 登录钩子加载它，宿主通过 `IActiveScriptSite` 提供 `crt` 对象，DLL 再通过 `IDispatch` 调用终端方法。
 
-接入时，桥接获取并保留 `crt.GetScriptTab()` 返回的实际标签页对象。此后的屏幕读取和命令发送都通过这个对象执行，不再查询“当前选中的标签页”。切换到另一个标签页不会改变命令目标，重新连接则会更换会话 ID。
+这里的“脚本 API”指 SecureCRT 自带的方法，并没有在 DLL 与终端之间再运行一层 VBScript 或 Python：
 
-COM 终端 API 调用保持在 SecureCRT 的宿主脚本线程中。Broker 通过轮询给各个接入实例派发任务，从而允许不同标签页独立工作。
+| SecureCRT 方法 | DLL 用它做什么 |
+|---|---|
+| `Screen.Get(...)` | 读取当前可见屏幕的文字，生成快照 |
+| `Screen.Send(...)` | 向会话发送命令或原始输入 |
+| `Screen.ReadString(...)` | 读取终端输出，等待指定标记 |
 
-会话标题只用于辅助辨认，不能充当唯一标识，更不能单凭标题证明服务器身份。AI 应结合会话 ID、屏幕内容和必要的只读命令确认目标。
+这些调用发生在 SecureCRT 的宿主脚本线程中。方法调用属于进程内接口；传入的命令字符串和返回的终端文字，才是通过接口交换的数据。
 
-## 如何判断一条命令结束
+### 本地端口：HTTP/1.1 + JSON
+
+Broker 只监听 `127.0.0.1`，从 `18765` 到 `18799` 中选择一个可用端口。通信使用 TCP 上的 HTTP/1.1，请求和响应中的业务数据使用 UTF-8 JSON。
+
+所有接口通过 `Authorization: Bearer <token>` 认证。本机发现文件保存端口和令牌，CLI 自动读取它：
+
+```text
+%USERPROFILE%\AppData\Local\SecureCRTBridge\connection.json
+```
+
+本地 HTTP 这一段不使用 TLS；远程连接的 SSH 加密和认证继续由 SecureCRT 负责。这个端口提供的是终端操作接口，不能把它当作 SSH 端口直接连接。
+
+## 一条命令的数据流程
+
+登录接入后，DLL 会持续向 Broker 上报会话信息。AI 先列出会话、读取屏幕，再为目标会话申请写入租约。下面从命令提交开始，展示两个并行发生的轮询过程：
+
+```mermaid
+sequenceDiagram
+    participant AI as AI / CLI
+    participant B as Rust Broker
+    participant D as Rust DLL（SecureCRT 内）
+    participant T as 原有 SSH 会话
+
+    AI->>B: HTTP：提交命令
+    B-->>AI: 返回任务 ID
+
+    par DLL 领取并执行任务
+        loop 空闲时约每 200ms，直到领取到任务
+            D->>B: POST /actor/poll：上报屏幕、查询任务
+            B-->>D: 返回待执行任务，或暂无任务
+        end
+        D->>T: 调用内置方法，发送命令
+        Note over T: 通过原有 SSH 连接执行<br/>命令和输出仍显示在用户窗口
+        T-->>D: 读取输出和结束标记
+        D->>B: POST /actor/result：回传输出、退出码
+    and CLI 等待结果
+        loop 约每 150ms，直到任务结束或等待到期
+            AI->>B: GET /jobs/{id}：查询任务
+            B-->>AI: 返回状态；完成后附带结果
+        end
+    end
+```
+
+**任务由 DLL 主动领取。** Broker 不会主动连接 SecureCRT，也不在 HTTP 请求到达时直接操作终端。DLL 空闲循环每次结束后等待约 200 毫秒，实际间隔还包含屏幕读取和请求耗时；执行命令期间会等待终端输出，完成后回传结果，再恢复轮询。
+
+**CLI 负责等待结果。** 默认的 `exec` 会先提交任务，再约每 150 毫秒查询一次状态，因此使用者看到的是一次完整的命令调用。加上 `--async` 后，CLI 在提交成功后立即返回，调用方可以稍后自行查询。
+
+数据沿途有三个主要标识：
+
+| 字段 | 含义 |
+|---|---|
+| `session` / 路径中的会话 ID | 要操作的 SSH 会话；DLL 上报时对应字段为 `id` |
+| `owner` | 当前 AI 对话或调用方的租约标识 |
+| `request_id` | 一次命令请求的标识，用于领取任务和查询结果 |
+
+屏幕快照和命令结果也有区别。`screen` 返回 Broker 最近收到的可见屏幕文字，并带有 `last_seen` 时间；它不是实时截图或完整滚屏历史。命令结果则由 DLL 在本次执行期间采集，包含 `output` 和 `exit_code`。终端中的标准输出与错误输出合在同一条文本流中。
+
+### 从连续终端输出中划分命令结果
 
 终端是连续字符流，没有天然的“这段就是某条命令的响应”。当前实现针对 POSIX shell，把命令包在两个随机标记之间：
 
@@ -88,43 +154,112 @@ COM 终端 API 调用保持在 SecureCRT 的宿主脚本线程中。Broker 通�
 
 这种协议适用于空闲的 POSIX shell，不适用于密码提示、编辑器、数据库客户端或任意全屏交互程序。需要交互时可以发送原始输入，但不能沿用 shell 命令的结束判断。
 
-## 三个在实测中发现的问题
+## 主要 HTTP 接口
 
-### 1. 接收 socket 仍然是非阻塞的
+下面的 `{id}` 表示会话 ID，`{request_id}` 表示命令请求 ID。所有请求都需要携带本机 Bearer 令牌，POST 的业务参数放在 JSON 请求体中。
 
-最初让监听 socket 以非阻塞方式工作，但接受连接后，工作线程使用了阻塞式的 `read_exact()`。在测试的 Windows 环境中，接收 socket 继承了非阻塞状态，遇到分段到达的 HTTP 请求就可能提前失败。
+| 方法与路径 | 用途 | 主要参数或返回内容 |
+|---|---|---|
+| `GET /health` | 检查服务 | 版本、暂停状态 |
+| `GET /sessions` | 列出会话 | ID、标题、连接状态、租约和忙碌状态 |
+| `GET /sessions/{id}/screen` | 读取最近的屏幕快照 | 屏幕文字、上报时间 |
+| `POST /sessions/{id}/claim` | 申请或续期写入租约 | `owner`、可选的 `ttl_seconds` |
+| `POST /sessions/{id}/exec` | 提交 shell 命令 | `owner`、`request_id`、`command`、`timeout_seconds` |
+| `POST /sessions/{id}/input` | 发送原始输入 | `owner`、`request_id`、`text` |
+| `GET /jobs/{request_id}` | 查询任务 | 状态、输出、退出码、执行时间 |
+| `POST /sessions/{id}/release` | 释放租约 | `owner` |
+| `POST /sessions/{id}/pause` | 暂停或恢复一个会话 | `paused` |
+| `POST /pause` | 暂停或恢复全局任务派发 | `paused` |
 
-修复是在接收后显式调用 `set_nonblocking(false)`，再设置读写超时。回归测试故意将请求拆开发送，确保代码不会把暂时没有后续字节误当成连接结束。
+DLL 使用另外两个内部接口：`POST /actor/poll` 上报会话 ID、标题、连接状态和屏幕文字，并在响应中领取任务；`POST /actor/result` 提交任务 ID、会话 ID 和结果。这两个接口由引擎使用，AI 通常无需直接调用。
 
-### 2. 登录脚本与手工脚本的初始状态不同
+例如，申请租约后向 `POST /sessions/{id}/exec` 提交：
 
-早期版本出现过登录后终端一片空白。连接并不一定断了，而是登录脚本进入时 `Screen.Synchronous` 为真，常驻循环没有持续消费同步缓冲，收到的数据没及时显示到用户窗口。
+```json
+{
+  "owner": "demo-chat",
+  "request_id": "demo-command-001",
+  "command": "hostname; pwd",
+  "timeout_seconds": 30
+}
+```
 
-隔离测试用独立配置和本机模拟登录复现了这个差异。处理方式是：空闲时明确关闭同步缓冲；捕获命令输出时才使用同步读取；正常返回和错误退出都恢复显示状态。由此也得到一个教训：单独运行脚本成功，不能证明它作为登录脚本常驻时也正确。
+提交响应只说明任务已入队：
 
-### 3. 短超时轮询会丢掉延时命令的前半段输出
+```json
+{"ok": true, "id": "demo-command-001", "status": "queued"}
+```
 
-最初每次只给 `ReadString()` 一秒，超时后再继续读。快速命令看起来没问题，碰到“先输出、等待几秒、再输出”的命令，API 结果却只剩后半段，而终端上能看到全文。
+随后查询 `GET /jobs/demo-command-001`。正常执行完成后的关键字段如下，服务器名和路径使用示例值：
 
-在所测试的 SecureCRT 版本中，读取超时会返回空字符串，已经消费的部分内容无法通过下一次调用补回来。改成一次调用覆盖命令的剩余时限后，开始与结束之间的输出才完整保留。
+```json
+{
+  "ok": true,
+  "id": "demo-command-001",
+  "status": "done",
+  "result": {
+    "ok": true,
+    "outcome": "completed",
+    "output": "demo-server\r\n/home/demo\r\n",
+    "exit_code": 0
+  }
+}
+```
 
-现在超时会标记为未知结果，不自动重发，也不自动发送 Ctrl+C。
+## 源码结构与各模块职责
 
-## 超时不是“没执行”
+项目采用 Cargo workspace，分成 `core`、`engine`、`app` 三个 crate：公共通信与状态逻辑放在 `core`，SecureCRT 进程内的接入逻辑放在 `engine`，安装和使用入口放在 `app`。
 
-这是桥接里比返回漂亮 JSON 更重要的一点：命令可能已经到达服务器，只是结果没有成功送回客户端。
+```text
+SecureCRTBridge/
+├─ crates/
+│  ├─ core/src/
+│  │  ├─ broker.rs       会话、租约、任务状态、请求去重、HTTP 路由
+│  │  ├─ http.rs         HTTP 报文读取、响应生成、本地请求客户端
+│  │  ├─ config.rs       配置编码处理、修改记录、备份和恢复
+│  │  └─ lib.rs          公共结构、路径、JSON 存储、命令标记包装
+│  ├─ engine/src/
+│  │  ├─ lib.rs          COM 引擎入口、生命周期、登录钩子处理
+│  │  ├─ dispatch.rs     封装 IDispatch 的方法调用与属性访问
+│  │  ├─ terminal.rs     读屏、轮询、发送命令、采集并回传结果
+│  │  └─ probe.rs        SecureCRT 进程内的诊断探针
+│  └─ app/
+│     ├─ src/
+│     │  ├─ main.rs          CLI 入口、命令分发、Broker 启动
+│     │  ├─ installer_ui.rs  安装窗口、路径选择、进度和日志
+│     │  ├─ installer.rs     路径检测、安装卸载、注册和配置修改
+│     │  ├─ platform.rs      Windows 注册表、权限、进程等操作
+│     │  ├─ tray.rs          系统托盘与暂停、恢复、退出控制
+│     │  └─ diagnose.rs      使用隔离配置运行诊断的独立程序
+│     └─ build.rs            嵌入引擎 DLL 和 Windows 清单
+├─ assets/skill/SKILL.md     AI 使用桥接的操作说明
+├─ build.ps1                开发时的测试、构建与打包入口
+└─ docs/VALIDATION.md        验证记录
+```
 
-每次写入在派发前生成请求 ID。相同 ID 和相同请求在当前服务生命周期内去重；客户端遇到错误后先查询这个 ID 的结果，不能直接再执行一次。未知结果会继续占用会话，只有确认终端已经空闲后才能解除。
+顺着一次 `exec` 看代码，可以从 `app/main.rs` 入手：解析参数后，通过 `core/http.rs` 发起请求；`core/broker.rs` 保存任务，等待 `engine/terminal.rs` 轮询领取。终端执行时，`terminal.rs` 使用 `core/lib.rs` 生成标记，再通过 `engine/dispatch.rs` 调用 SecureCRT。执行结果回到 Broker 后，`main.rs` 的查询循环读取并输出 JSON。
 
-这也不是跨重启的 exactly-once 保证。Broker 重启会丢失内存中的任务结果；“查不到 ID”不能证明“命令没有执行过”。
+配置修改与运行时操作分别位于 `config.rs` 和 `terminal.rs`。这样安装器可以独立处理配置备份与恢复，终端引擎则专注于已连接会话的读写。
 
-租约也有范围：它协调多个 AI 对话，不能锁住用户的物理键盘。人和 AI 仍应轮流操作同一个标签页。暂停会取消未派发任务，已在远端运行的命令则需要按实际情况处理。
+## 安装、自动启动与打包
+
+安装界面使用 Win32 原生控件，路径选择、进度条和逐步日志都由 Rust 代码处理。耗时操作放在工作线程，界面通过进度事件更新。
+
+安装过程依次检测 SecureCRT 及其配置目录，将程序写入所选目录下的 `SecureCRTBridge` 子目录，注册当前用户的 COM 引擎，备份并设置登录钩子，然后配置启动项和 skill。Windows 登录后可以自动启动 Broker，新 SSH 会话通过登录钩子加载 DLL，必要时启动 Broker。
+
+安装记录保存配置的修改前后值，以及自有文件的哈希。卸载时仍保持安装值的配置会恢复原值，用户之后改过的配置和文件则保留并提示。
+
+实现主要使用 Rust 标准库的 TCP、线程和同步机制，`serde` / `serde_json` 处理 JSON，`windows` / `windows-core` 提供 Win32 与 COM 绑定，`uuid` 生成标识，`sha2` 计算文件哈希。
+
+构建时先生成 `scb_engine.dll`，再通过 `include_bytes!` 把它嵌入安装 EXE，同时带上 skill、说明和许可证。安装后运行的是 EXE 与 DLL，分发时只需提供一个安装包。`build.ps1` 只用于开发阶段调用 Cargo，用户运行时不依赖它。
 
 ## 让其他 AI 对话接入
 
-安装器把 `securecrt-bridge` skill 放到当前用户的 Codex skills 目录；自定义 `CODEX_HOME` 时跟随该目录。
+当前安装器默认把 `securecrt-bridge` skill 放到 `%USERPROFILE%\.codex\skills\securecrt-bridge\SKILL.md`；设置了 `CODEX_HOME` 时，改为该目录下的 `skills/securecrt-bridge/SKILL.md`。
 
-skill 写的是操作约定：先发现安装路径，再列会话、读屏幕、申请租约，执行结束后释放；明确超时查询、未知结果处理和暂停语义。它不保存服务器密码或本机令牌，也不授予新的系统权限。
+skill 写的是操作约定：先发现安装路径，再列会话、读屏幕、申请租约，执行结束后释放。它不保存服务器密码或本机令牌，也不授予新的系统权限。
+
+这部分目前按 Codex 的目录约定安装，即使未安装 Codex 也会创建对应目录；安装界面暂未提供其他客户端的 skill 路径选择。其他 AI 客户端可以使用通用 CLI 或 HTTP 接口，但 skill 的存放路径和加载方式需要按各客户端的约定配置。
 
 手动使用 CLI 的流程类似：
 
@@ -140,14 +275,8 @@ skill 写的是操作约定：先发现安装路径，再列会话、读屏幕�
 
 ## 验证范围与当前限制
 
-自动测试覆盖 HTTP 鉴权、分段请求、租约和重复派发防护、配置恢复、COM 生命周期、中文与退出码、延时输出和超时不重试。
-
-真实 SecureCRT 9.7.1 测试中，两个最小化的 SSH 标签页分别执行了带四秒等待的只读命令，完整输出都返回，退出码均为 0。用 Broker 同一本机记录的派发与完成时间计算，两条任务的执行区间重叠约 4.5 秒。没有拿两台服务器各自的时钟来推断并行。
-
-安装器增加了控件状态自检；它能验证进度事件、模式切换、防重复点击和错误后重试，但不能代替真实的完整安装／卸载验证。具体通过项目和未覆盖项持续记录在仓库的 [验证记录](https://github.com/LinHuiG/securecrt-bridge/blob/main/docs/VALIDATION.md)。
+自动测试覆盖通信、租约和任务调度、配置恢复、COM 生命周期及终端结果采集。在 SecureCRT 9.7.1 的真实测试中，两个最小化的 SSH 标签页能够并行执行命令并返回完整输出。具体通过项目和未覆盖项见仓库的 [验证记录](https://github.com/LinHuiG/securecrt-bridge/blob/main/docs/VALIDATION.md)。
 
 当前只支持 Windows x64 与 SecureCRT x64，命令采集面向 POSIX shell。已有内置 Python 登录脚本会保留并跳过；第三方 ActiveX 脚本串联仍需更多兼容验证。显式 `/SCRIPT` 参数也可能覆盖默认登录钩子。
 
 本机服务只绑定 `127.0.0.1`，接口要求令牌并拒绝带 Origin 的浏览器请求，但同一 Windows 用户下的恶意程序仍属于信任边界之内。连接发现文件不要上传到仓库。项目采用 MIT 许可，不包含 SecureCRT 本体或堡垒机客户端。
-
-对我来说，它最有价值的地方，是把已经能用的终端接进了 AI 的工作流程，同时保留同一个窗口里的可见操作。后续需要继续打磨的，是更多登录脚本和 SecureCRT 版本的兼容性，以及更完整的安装与卸载验收。
