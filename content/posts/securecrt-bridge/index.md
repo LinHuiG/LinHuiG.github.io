@@ -166,12 +166,16 @@ sequenceDiagram
 | `POST /sessions/{id}/claim` | 申请或续期写入租约 | `owner`、可选的 `ttl_seconds` |
 | `POST /sessions/{id}/exec` | 提交 shell 命令 | `owner`、`request_id`、`command`、`timeout_seconds` |
 | `POST /sessions/{id}/input` | 发送原始输入 | `owner`、`request_id`、`text` |
+| `POST /sessions/{id}/interrupt` | 对自己的未知任务发送一次 Ctrl+C（0.1.6） | `owner`、`request_id`、原任务的 `job_id` |
 | `GET /jobs/{request_id}` | 查询任务 | 状态、输出、退出码、执行时间 |
 | `POST /sessions/{id}/release` | 释放租约 | `owner` |
+| `POST /sessions/{id}/acknowledge` | 确认终端恢复空闲后解除任务占用 | `owner` |
 | `POST /sessions/{id}/pause` | 暂停或恢复一个会话 | `paused` |
 | `POST /pause` | 暂停或恢复全局任务派发 | `paused` |
 
 DLL 使用另外两个内部接口：`POST /actor/poll` 上报会话 ID、标题、连接状态和屏幕文字，并在响应中领取任务；`POST /actor/result` 提交任务 ID、会话 ID 和结果。这两个接口由引擎使用，AI 通常无需直接调用。
+
+0.1.6 的 `interrupt` 用于恢复自己的未完成输入，例如引号未闭合导致 shell 停在 `>`。它通过现有轮询发送一次 Ctrl+C，保留原任务锁；AI 查询新的屏幕快照、确认普通提示符后，再调用 `acknowledge`。它不抢占正在进行的输出采集，也不会自动重跑原命令。
 
 例如，申请租约后向 `POST /sessions/{id}/exec` 提交：
 
@@ -260,6 +264,8 @@ SecureCRTBridge/
 skill 写的是操作约定：先发现安装路径，再列会话、读屏幕、申请租约，执行结束后释放。它不保存服务器密码或本机令牌，也不授予新的系统权限。
 
 这部分目前按 Codex 的目录约定安装，即使未安装 Codex 也会创建对应目录；安装界面暂未提供其他客户端的 skill 路径选择。其他 AI 客户端可以使用通用 CLI 或 HTTP 接口，但 skill 的存放路径和加载方式需要按各客户端的约定配置。
+
+读取会话、屏幕和既有结果，可以在 AI 客户端中为固定的只读子命令配置长期允许规则；远程写入按具体操作、目标和已授权范围处理。同一任务内的同类操作可以复用已有授权，但 `exec` 本身能执行任意 shell 命令，不能整体当成只读接口放行。桥接的会话租约与客户端的工具审批分别生效，配置方法见仓库的 [审批说明](https://github.com/LinHuiG/securecrt-bridge/blob/main/docs/APPROVALS.md)。
 
 手动使用 CLI 的流程类似：
 
