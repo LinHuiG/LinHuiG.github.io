@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="848" viewBox="0 0 960 848" role="img" aria-labelledby="title desc">
+<title id="title">低成本过滤，按需唤起完整分析</title>
+<desc id="desc">新增消息批次保存在待分析队列中。轻量过滤判断需要分析、不确定或失败时提前触发完整分析；等待时消息仍然保留。定时调度默认每30分钟兜底。完整分析成功提交后才推进分析进度。</desc>
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="#637b8e"/></marker>
+</defs>
+<style>text{font-family:'Microsoft YaHei','Noto Sans CJK SC',sans-serif;fill:#203448}.edge{fill:none;stroke:#637b8e;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#arrow)}.both{marker-start:url(#arrow)}.dashed{stroke-dasharray:7 6}</style>
+<rect x="1" y="1" width="958" height="846" rx="22" fill="#f7f9fc" stroke="#dce4ec"/>
+
+<text x="48" y="39" font-size="20" style="fill:#526779" text-anchor="start" font-weight="600">SHISHI  /  01  消息调度</text>
+<text x="48" y="84" font-size="32" style="fill:#203448" text-anchor="start" font-weight="700">低成本过滤，按需唤起完整分析</text>
+<rect x="48" y="120" width="864" height="92" rx="14" fill="#edf4fb" stroke="#b8cce3" stroke-width="1.6"/>
+<text x="480.0" y="159.0" font-size="28" style="fill:#203448" text-anchor="middle" font-weight="650">新增消息批次 → 本地待分析队列</text>
+<text x="480.0" y="196.0" font-size="22" style="fill:#526779" text-anchor="middle" font-weight="400">消息持续保留，按批次与最小间隔处理</text>
+<path d="M194 212V288" class="edge"/>
+<path d="M766 212V288" class="edge"/>
+<rect x="48" y="288" width="292" height="112" rx="14" fill="#fff" stroke="#cbd7e3" stroke-width="1.6"/>
+<text x="194.0" y="337.0" font-size="28" style="fill:#203448" text-anchor="middle" font-weight="650">轻量过滤</text>
+<text x="194.0" y="374.0" font-size="22" style="fill:#526779" text-anchor="middle" font-weight="400">低成本模型</text>
+<rect x="620" y="288" width="292" height="112" rx="14" fill="#fff" stroke="#cbd7e3" stroke-width="1.6"/>
+<text x="766.0" y="337.0" font-size="28" style="fill:#203448" text-anchor="middle" font-weight="650">定时调度</text>
+<text x="766.0" y="374.0" font-size="22" style="fill:#526779" text-anchor="middle" font-weight="400">默认每 30 分钟</text>
+<path d="M340 344H392" class="edge"/>
+<rect x="392" y="308" width="176" height="72" rx="14" fill="#f0f3f7" stroke="#cbd7e3" stroke-width="1.6"/>
+<text x="480.0" y="353.0" font-size="26" style="fill:#203448" text-anchor="middle" font-weight="650">等待</text>
+<path d="M480 308V212" class="edge dashed"/>
+<text x="500" y="258" font-size="22" style="fill:#526779" text-anchor="start" font-weight="400">消息仍保留</text>
+<path d="M194 400V584H344" class="edge"/>
+<rect x="64" y="420" width="260" height="90" rx="8" fill="#f7f9fc" stroke="none" stroke-width="1.6"/>
+<text x="194" y="455" font-size="25" style="fill:#277568" text-anchor="middle" font-weight="650">提前触发</text>
+<text x="194" y="488" font-size="21" style="fill:#526779" text-anchor="middle" font-weight="400">需要分析 / 不确定 / 失败</text>
+<path d="M766 400V584H616" class="edge"/>
+<rect x="636" y="420" width="260" height="90" rx="8" fill="#f7f9fc" stroke="none" stroke-width="1.6"/>
+<text x="766" y="455" font-size="25" style="fill:#486caa" text-anchor="middle" font-weight="650">到期触发</text>
+<text x="766" y="488" font-size="22" style="fill:#526779" text-anchor="middle" font-weight="400">有待处理增量时兜底</text>
+<rect x="344" y="528" width="272" height="112" rx="14" fill="#eaf4ef" stroke="#9ebfb4" stroke-width="1.6"/>
+<text x="480.0" y="577.0" font-size="28" style="fill:#203448" text-anchor="middle" font-weight="650">完整分析</text>
+<text x="480.0" y="614.0" font-size="22" style="fill:#526779" text-anchor="middle" font-weight="400">较强模型 · 结构化判断</text>
+<path d="M480 640V692" class="edge"/>
+<rect x="344" y="692" width="272" height="68" rx="14" fill="#fff" stroke="#cbd7e3" stroke-width="1.6"/>
+<text x="480.0" y="735.0" font-size="26" style="fill:#203448" text-anchor="middle" font-weight="650">校验后更新事项</text>
+<text x="480" y="807" font-size="22" style="fill:#526779" text-anchor="middle" font-weight="400">过滤只决定触发时机；完整分析成功提交后推进进度</text>
+</svg>

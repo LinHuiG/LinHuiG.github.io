@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="920" viewBox="0 0 960 920" role="img" aria-labelledby="title desc">
+<title id="title">摘要定位，快照提供完整证据</title>
+<desc id="desc">首轮只提供增量消息和事项摘要。Agent在材料足够时输出结构化动作；缺少证据时通过只读read_context工具按需检索消息、事项和更新流水快照，再继续判断。快照来自权威状态，可以校验和重建；检索受分页、累计预算和去重约束。</desc>
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="#637b8e"/></marker>
+</defs>
+<style>text{font-family:'Microsoft YaHei','Noto Sans CJK SC',sans-serif;fill:#203448}.edge{fill:none;stroke:#637b8e;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#arrow)}.both{marker-start:url(#arrow)}.dashed{stroke-dasharray:7 6}</style>
+<rect x="1" y="1" width="958" height="918" rx="22" fill="#f7f9fc" stroke="#dce4ec"/>
+
+<text x="48" y="39" font-size="20" style="fill:#526779" text-anchor="start" font-weight="600">SHISHI  /  03  按需检索</text>
+<text x="48" y="84" font-size="32" style="fill:#203448" text-anchor="start" font-weight="700">摘要定位，快照提供完整证据</text>
+<rect x="48" y="144" width="248" height="112" rx="14" fill="#fff" stroke="#cbd7e3" stroke-width="1.6"/>
+<text x="172.0" y="193.0" font-size="28" style="fill:#203448" text-anchor="middle" font-weight="650">首轮摘要</text>
+<text x="172.0" y="230.0" font-size="22" style="fill:#526779" text-anchor="middle" font-weight="400">新消息 + 事项索引</text>
+<rect x="356" y="144" width="248" height="112" rx="14" fill="#edf2fa" stroke="#bccce4" stroke-width="1.6"/>
+<text x="480.0" y="193.0" font-size="28" style="fill:#203448" text-anchor="middle" font-weight="650">Agent 判断</text>
+<text x="480.0" y="230.0" font-size="22" style="fill:#526779" text-anchor="middle" font-weight="400">识别缺失证据</text>
+<rect x="664" y="144" width="248" height="112" rx="14" fill="#eaf4ef" stroke="#9ebfb4" stroke-width="1.6"/>
+<text x="788.0" y="193.0" font-size="28" style="fill:#203448" text-anchor="middle" font-weight="650">结构化动作</text>
+<text x="788.0" y="230.0" font-size="22" style="fill:#526779" text-anchor="middle" font-weight="400">交给程序校验</text>
+<path d="M296 200H356" class="edge"/>
+<path d="M604 200H664" class="edge"/>
+<text x="634" y="132" font-size="21" style="fill:#277568" text-anchor="middle" font-weight="400">材料足够</text>
+<path d="M480 256V344" class="edge both"/>
+<text x="506" y="306" font-size="22" style="fill:#526779" text-anchor="start" font-weight="400">缺什么，查什么</text>
+<rect x="332" y="344" width="296" height="104" rx="14" fill="#fff" stroke="#cbd7e3" stroke-width="1.6"/>
+<text x="480.0" y="389.0" font-size="28" style="fill:#203448" text-anchor="middle" font-weight="650">read_context</text>
+<text x="480.0" y="426.0" font-size="22" style="fill:#526779" text-anchor="middle" font-weight="400">只读 MCP / 工具调用</text>
+<path d="M480 448V536" class="edge both"/>
+<text x="454" y="500" font-size="22" style="fill:#526779" text-anchor="end" font-weight="400">分页 · 总预算 · 去重</text>
+<rect x="48" y="536" width="864" height="164" rx="14" fill="#eef3f8" stroke="#cbd7e3" stroke-width="1.6"/>
+<text x="72" y="571" font-size="23" style="fill:#526779" text-anchor="start" font-weight="600">只读检索快照</text>
+<rect x="72" y="592" width="256" height="80" rx="14" fill="#fff" stroke="#cbd7e3" stroke-width="1.6"/>
+<text x="200.0" y="625.0" font-size="26" style="fill:#203448" text-anchor="middle" font-weight="650">消息</text>
+<text x="200.0" y="662.0" font-size="22" style="fill:#526779" text-anchor="middle" font-weight="400">原文与图片索引</text>
+<rect x="352" y="592" width="256" height="80" rx="14" fill="#fff" stroke="#cbd7e3" stroke-width="1.6"/>
+<text x="480.0" y="625.0" font-size="26" style="fill:#203448" text-anchor="middle" font-weight="650">未归档事项</text>
+<text x="480.0" y="662.0" font-size="22" style="fill:#526779" text-anchor="middle" font-weight="400">详情与消息依据</text>
+<rect x="632" y="592" width="256" height="80" rx="14" fill="#fff" stroke="#cbd7e3" stroke-width="1.6"/>
+<text x="760.0" y="625.0" font-size="26" style="fill:#203448" text-anchor="middle" font-weight="650">更新流水</text>
+<text x="760.0" y="662.0" font-size="22" style="fill:#526779" text-anchor="middle" font-weight="400">完整前后变化</text>
+<path d="M480 772V700" class="edge"/>
+<text x="506" y="746" font-size="22" style="fill:#526779" text-anchor="start" font-weight="400">派生、校验</text>
+<rect x="48" y="772" width="864" height="76" rx="14" fill="#fff" stroke="#cbd7e3" stroke-width="1.6"/>
+<text x="480.0" y="803.0" font-size="27" style="fill:#203448" text-anchor="middle" font-weight="650">权威状态 state.json</text>
+<text x="480.0" y="840.0" font-size="22" style="fill:#526779" text-anchor="middle" font-weight="400">快照可重建 · 来源修订 · 数据截止 · 完整性校验</text>
+<text x="480" y="891" font-size="22" style="fill:#526779" text-anchor="middle" font-weight="400">模型决定查什么；程序约束范围、预算与版本</text>
+</svg>

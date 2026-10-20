@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="928" viewBox="0 0 960 928" role="img" aria-labelledby="title desc">
+<title id="title">两类记忆，分开维护、共同使用</title>
+<desc id="desc">系统提示词与固定协议独立于AI记忆。消息分析维护临时记忆，归档流程维护归档记忆。两类记忆共同进入后续分析输入，归档记忆靠前、临时记忆靠后；覆盖更新前检查完整旧版本和并发版本，用户也可以查看和编辑记忆。</desc>
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="#637b8e"/></marker>
+</defs>
+<style>text{font-family:'Microsoft YaHei','Noto Sans CJK SC',sans-serif;fill:#203448}.edge{fill:none;stroke:#637b8e;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#arrow)}.both{marker-start:url(#arrow)}.dashed{stroke-dasharray:7 6}</style>
+<rect x="1" y="1" width="958" height="926" rx="22" fill="#f7f9fc" stroke="#dce4ec"/>
+
+<text x="48" y="39" font-size="20" style="fill:#526779" text-anchor="start" font-weight="600">SHISHI  /  04  分层记忆</text>
+<text x="48" y="84" font-size="32" style="fill:#203448" text-anchor="start" font-weight="700">两类记忆，分开维护、共同使用</text>
+<rect x="48" y="120" width="864" height="96" rx="14" fill="#eef3f8" stroke="#cbd7e3" stroke-width="1.6"/>
+<text x="480.0" y="161.0" font-size="28" style="fill:#203448" text-anchor="middle" font-weight="650">系统提示词 / 固定协议</text>
+<text x="480.0" y="198.0" font-size="22" style="fill:#526779" text-anchor="middle" font-weight="400">独立于 AI 记忆；行为规则建议由用户人工采用</text>
+<path d="M480 216V264H216V312" class="edge"/>
+<path d="M480 264H744V312" class="edge"/>
+<text x="500" y="248" font-size="22" style="fill:#526779" text-anchor="start" font-weight="400">提供规则与约束</text>
+<rect x="48" y="312" width="336" height="112" rx="14" fill="#fff" stroke="#cbd7e3" stroke-width="1.6"/>
+<text x="216.0" y="361.0" font-size="28" style="fill:#203448" text-anchor="middle" font-weight="650">消息分析</text>
+<text x="216.0" y="398.0" font-size="22" style="fill:#526779" text-anchor="middle" font-weight="400">独立的分析会话</text>
+<rect x="576" y="312" width="336" height="112" rx="14" fill="#fff" stroke="#cbd7e3" stroke-width="1.6"/>
+<text x="744.0" y="361.0" font-size="28" style="fill:#203448" text-anchor="middle" font-weight="650">归档流程</text>
+<text x="744.0" y="398.0" font-size="22" style="fill:#526779" text-anchor="middle" font-weight="400">报表与事项归档</text>
+<path d="M216 424V504" class="edge both"/>
+<path d="M744 424V504" class="edge both"/>
+<text x="236" y="472" font-size="22" style="fill:#526779" text-anchor="start" font-weight="400">读取 / 维护</text>
+<text x="764" y="472" font-size="22" style="fill:#526779" text-anchor="start" font-weight="400">读取 / 维护</text>
+<rect x="48" y="504" width="336" height="140" rx="14" fill="#edf2fa" stroke="#bccce4" stroke-width="1.6"/>
+<text x="216" y="547" font-size="30" style="fill:#486caa" text-anchor="middle" font-weight="650">临时记忆</text>
+<text x="216" y="585" font-size="23" style="fill:#526779" text-anchor="middle" font-weight="400">线索、提醒、跨轮交接</text>
+<text x="216" y="618" font-size="22" style="fill:#526779" text-anchor="middle" font-weight="400">工作区 · 变化较频繁</text>
+<rect x="576" y="504" width="336" height="140" rx="14" fill="#eaf4ef" stroke="#9ebfb4" stroke-width="1.6"/>
+<text x="744" y="547" font-size="30" style="fill:#277568" text-anchor="middle" font-weight="650">归档记忆</text>
+<text x="744" y="585" font-size="23" style="fill:#526779" text-anchor="middle" font-weight="400">长期背景与处理经验</text>
+<text x="744" y="618" font-size="22" style="fill:#526779" text-anchor="middle" font-weight="400">来自有依据的归档说明</text>
+<path d="M216 644V704H416V744" class="edge"/>
+<path d="M744 644V704H544V744" class="edge"/>
+<text x="480" y="685" font-size="23" style="fill:#526779" text-anchor="middle" font-weight="400">进入后续分析上下文</text>
+<rect x="192" y="744" width="576" height="112" rx="14" fill="#fff" stroke="#cbd7e3" stroke-width="1.6"/>
+<text x="480.0" y="793.0" font-size="30" style="fill:#203448" text-anchor="middle" font-weight="650">后续分析输入</text>
+<text x="480.0" y="830.0" font-size="22" style="fill:#526779" text-anchor="middle" font-weight="400">归档记忆靠前，临时记忆靠后</text>
+<text x="480" y="899" font-size="22" style="fill:#526779" text-anchor="middle" font-weight="400">可人工编辑；覆盖更新前核对完整旧版与并发版本</text>
+</svg>
