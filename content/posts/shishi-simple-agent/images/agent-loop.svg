@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1280" viewBox="0 0 1800 1280" role="img" aria-labelledby="title desc">
+<title id="title">补充事项依据的工具循环</title>
+<desc id="desc">围绕已生成事项，模型请求 SS 执行查询工具。SS 记录并回传实际结果，模型继续判断，最后整理发现并保存事项与补充依据。取消、总期限和输入预算覆盖整个循环。正式处置仍由 Codex 或 DSH 执行。</desc>
+<rect width="1800" height="1280" fill="#ffffff"/>
+<text x="90" y="57" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#65748b" text-anchor="start" dominant-baseline="central">SHISHI  /  AGENT LOOP</text>
+<text x="90" y="116" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="48" font-weight="700" fill="#172238" text-anchor="start" dominant-baseline="central">补充事项依据的工具循环</text>
+<text x="90" y="170" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="29" font-weight="400" fill="#52647c" text-anchor="start" dominant-baseline="central">围绕已有事项提前查询，带着实际结果继续判断</text>
+<rect x="55" y="205" width="1690" height="980" rx="30" fill="#f7f9fc" stroke="#e1e7f0" stroke-width="2"/>
+<polyline points="570,365 570,430" fill="none" stroke="#62758e" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+<polygon points="570.00,430.00 577.00,416.00 563.00,416.00" fill="#62758e"/>
+<polyline points="570,562 570,760" fill="none" stroke="#4778ca" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+<polygon points="570.00,760.00 577.00,746.00 563.00,746.00" fill="#4778ca"/>
+<polyline points="570,892 570,1010" fill="none" stroke="#258b70" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+<polygon points="570.00,1010.00 577.00,996.00 563.00,996.00" fill="#258b70"/>
+<polyline points="260,1076 115,1076 115,496 260,496" fill="none" stroke="#258b70" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+<polygon points="260.00,496.00 246.00,489.00 246.00,503.00" fill="#258b70"/>
+<polyline points="880,496 1200,496" fill="none" stroke="#4778ca" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+<polygon points="1200.00,496.00 1186.00,489.00 1186.00,503.00" fill="#4778ca"/>
+<polyline points="1425,562 1425,760" fill="none" stroke="#258b70" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+<polygon points="1425.00,760.00 1432.00,746.00 1418.00,746.00" fill="#258b70"/>
+<rect x="260" y="235" width="620" height="130" rx="22" fill="#ffffff" stroke="#d3dce9" stroke-width="2"/>
+<text x="570.0" y="280" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="35" font-weight="700" fill="#172238" text-anchor="middle" dominant-baseline="central">已生成事项与上下文</text>
+<text x="570.0" y="326" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" font-weight="400" fill="#52647c" text-anchor="middle" dominant-baseline="central">关联消息、记忆、可用工具</text>
+<rect x="260" y="430" width="620" height="132" rx="22" fill="#edf3ff" stroke="#b1c8ef" stroke-width="2"/>
+<text x="570.0" y="475" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="35" font-weight="700" fill="#172238" text-anchor="middle" dominant-baseline="central">调用模型，判断下一步</text>
+<text x="570.0" y="521" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" font-weight="400" fill="#52647c" text-anchor="middle" dominant-baseline="central">继续查询，或整理补充依据</text>
+<rect x="260" y="760" width="620" height="132" rx="22" fill="#ecf8f4" stroke="#a4d7c6" stroke-width="2"/>
+<text x="570.0" y="805" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="35" font-weight="700" fill="#172238" text-anchor="middle" dominant-baseline="central">SS 校验并执行工具</text>
+<text x="570.0" y="851" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" font-weight="400" fill="#52647c" text-anchor="middle" dominant-baseline="central">已注册的 CMD 命令模板</text>
+<rect x="260" y="1010" width="620" height="132" rx="22" fill="#ecf8f4" stroke="#a4d7c6" stroke-width="2"/>
+<text x="570.0" y="1055" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="35" font-weight="700" fill="#172238" text-anchor="middle" dominant-baseline="central">记录并回传实际结果</text>
+<text x="570.0" y="1101" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" font-weight="400" fill="#52647c" text-anchor="middle" dominant-baseline="central">输出、错误、退出状态</text>
+<rect x="1200" y="430" width="450" height="132" rx="22" fill="#edf3ff" stroke="#b1c8ef" stroke-width="2"/>
+<text x="1425.0" y="475" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="35" font-weight="700" fill="#172238" text-anchor="middle" dominant-baseline="central">整理补充依据</text>
+<text x="1425.0" y="521" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" font-weight="400" fill="#52647c" text-anchor="middle" dominant-baseline="central">查询发现与待确认的问题</text>
+<rect x="1200" y="760" width="450" height="132" rx="22" fill="#ecf8f4" stroke="#a4d7c6" stroke-width="2"/>
+<text x="1425.0" y="805" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="35" font-weight="700" fill="#172238" text-anchor="middle" dominant-baseline="central">SS 校验并保存</text>
+<text x="1425.0" y="851" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" font-weight="400" fill="#52647c" text-anchor="middle" dominant-baseline="central">事项与补充依据</text>
+<rect x="380.0" y="630" width="380" height="46" rx="10" fill="#f7f9fc"/>
+<text x="570" y="653" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" font-weight="400" fill="#3f69a9" text-anchor="middle" dominant-baseline="central">工具请求：工具名 + 参数</text>
+<rect x="410.0" y="928" width="320" height="46" rx="10" fill="#f7f9fc"/>
+<text x="570" y="951" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" font-weight="400" fill="#20735d" text-anchor="middle" dominant-baseline="central">实际输出与执行状态</text>
+<rect x="935.0" y="432" width="210" height="46" rx="10" fill="#f7f9fc"/>
+<text x="1040" y="455" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" font-weight="400" fill="#3f69a9" text-anchor="middle" dominant-baseline="central">返回最终结果</text>
+<rect x="1300.0" y="630" width="250" height="46" rx="10" fill="#f7f9fc"/>
+<text x="1425" y="653" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" font-weight="400" fill="#20735d" text-anchor="middle" dominant-baseline="central">结构与业务校验</text>
+<rect x="65" y="729" width="150" height="98" rx="8" fill="#f7f9fc"/>
+<text x="140" y="757" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" font-weight="400" fill="#20735d" text-anchor="middle" dominant-baseline="central">带着结果</text>
+<text x="140" y="799" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" font-weight="400" fill="#20735d" text-anchor="middle" dominant-baseline="central">继续判断</text>
+<rect x="1055" y="990" width="620" height="110" rx="18" fill="#ffffff" stroke="#dbe3ee" stroke-width="2"/>
+<text x="1365" y="1027" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="28" font-weight="700" fill="#374b65" text-anchor="middle" dominant-baseline="central">取消、总期限和输入预算</text>
+<text x="1365" y="1070" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="26" font-weight="400" fill="#65748b" text-anchor="middle" dominant-baseline="central">覆盖整个循环</text>
+<text x="90" y="1228" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#52647c" text-anchor="start" dominant-baseline="central">模型选择工具，SS 补充依据；正式处置交给 Codex / DSH。</text>
+</svg>
