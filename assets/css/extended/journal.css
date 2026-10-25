@@ -87,7 +87,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,su
 .post-content a:hover { text-decoration-color: currentColor; }
 .post-content pre { border-radius: 12px; }
 .post-content code { border-radius: 5px; font-size: .84em; }
-.post-content img { border-radius: 12px; }
+.post-content img { height: auto; border-radius: 12px; }
 .post-content table { font-size: 15px; }
 .post-content table:not(.highlighttable) td,.post-content table:not(.highlighttable) th { padding: 11px 14px; }
 details.toc { margin: 32px 0; border: 1px solid var(--border); border-radius: 12px; background: var(--code-bg); font-size: 14px; }
